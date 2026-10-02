@@ -1,3 +1,5 @@
+%%writefile app.py
+
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
@@ -1060,4 +1062,3 @@ elif st.session_state["pagina"] == "ajuda":
         st.success(
             "Sua solicitação foi registrada."
         )
-
