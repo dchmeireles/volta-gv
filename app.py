@@ -1119,4 +1119,50 @@ elif st.session_state["pagina"] == "ajuda":
             "Sua solicitação foi registrada."
         )
 
+!ls -lh app.py
+!streamlit run app.py --server.port 8501 &>/content/streamlit.log &
+!wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+!dpkg -i cloudflared-linux-amd64.deb
 
+!cat /content/streamlit.log
+
+import subprocess
+import re
+import time
+
+process = subprocess.Popen(
+    [
+        "cloudflared",
+        "tunnel",
+        "--url",
+        "http://localhost:8501"
+    ],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT,
+    text=True
+)
+
+for i in range(30):
+    line = process.stdout.readline()
+
+    if "trycloudflare.com" in line:
+        print(line)
+        break
+
+    time.sleep(1)
+
+import subprocess
+import time
+
+process = subprocess.Popen(
+    ["cloudflared", "tunnel", "--url", "http://localhost:8501"],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT,
+    text=True
+)
+
+for _ in range(40):
+    line = process.stdout.readline()
+    if line:
+        print(line.strip())
+    time.sleep(0.5)
