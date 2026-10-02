@@ -1,9 +1,66 @@
+!pip -q install streamlit pyngrok gspread
+
+from google.colab import auth
+auth.authenticate_user()
+
+import google.auth
+import gspread
+
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds, _ = google.auth.default(scopes=SCOPES)
+
+gc = gspread.authorize(creds)
+
+# Criar ou abrir a planilha
+NOME_PLANILHA = "Volta GV - Respostas"
+
+try:
+    planilha = gc.open(NOME_PLANILHA)
+    print("Planilha existente encontrada.")
+
+except gspread.exceptions.SpreadsheetNotFound:
+    planilha = gc.create(NOME_PLANILHA)
+    print("Planilha criada.")
+
+# Primeira aba
+aba = planilha.sheet1
+aba.update_title("Respostas")
+
+# Criar cabeçalhos se a planilha estiver vazia
+if not aba.get_all_values():
+
+    cabecalhos = [
+        "data_hora",
+        "nome",
+        "idade",
+        "bairro",
+        "escolaridade",
+        "experiencia",
+        "tempo_fora",
+        "filhos",
+        "idade_filho",
+        "horas",
+        "modalidade",
+        "barreiras"
+    ]
+
+    aba.append_row(cabecalhos)
+
+print("Google Sheets conectado!")
+print("Planilha:", NOME_PLANILHA)
+
+
 %%writefile app.py
 
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
+
 
 # ============================================================
 # CONFIGURAÇÃO
@@ -1061,3 +1118,5 @@ elif st.session_state["pagina"] == "ajuda":
         st.success(
             "Sua solicitação foi registrada."
         )
+
+
