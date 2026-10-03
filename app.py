@@ -10,7 +10,6 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="expanded"
 )
-
 # ============================================================
 # IDENTIDADE VISUAL
 # ============================================================
@@ -20,12 +19,10 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
 
-/* Fundo geral */
 .stApp {
     background-color: #FAF9FC;
 }
 
-/* Área principal */
 .block-container {
     padding-top: 2.5rem;
     padding-bottom: 3rem;
@@ -37,12 +34,11 @@ h1, h2, h3 {
     color: #43266F !important;
 }
 
-/* Título principal */
 h1 {
     font-weight: 700 !important;
 }
 
-/* Texto */
+/* Textos */
 p, label {
     font-family: 'Inter', sans-serif;
 }
@@ -61,14 +57,14 @@ p, label {
     color: white;
 }
 
-/* Inputs */
+/* Campos */
 .stTextInput input,
 .stTextArea textarea,
 .stNumberInput input {
     border-radius: 8px;
 }
 
-/* Caixa principal da página inicial */
+/* Hero */
 .volta-hero {
     background-color: #F1EAF9;
     border: 1px solid #E5D8F0;
@@ -77,10 +73,10 @@ p, label {
     margin-bottom: 2rem;
 }
 
-/* Logo textual */
+/* Logo */
 .volta-logo {
     font-family: 'Poppins', sans-serif;
-    font-size: 2.7rem;
+    font-size: 2.4rem !important;
     font-weight: 700;
     color: #43266F;
     letter-spacing: -1px;
@@ -103,7 +99,6 @@ p, label {
     margin-bottom: 1rem;
 }
 
-/* Título dos cards */
 .volta-card-titulo {
     font-family: 'Poppins', sans-serif;
     font-size: 1.15rem;
@@ -111,7 +106,6 @@ p, label {
     color: #43266F;
 }
 
-/* Texto dos cards */
 .volta-card-texto {
     color: #625A6B;
     line-height: 1.5;
@@ -129,9 +123,13 @@ p, label {
 
 </style>
 """, unsafe_allow_html=True)
-/* ---------------------------------------------------------
-   TÍTULOS
---------------------------------------------------------- */
+
+
+
+
+# ---------------------------------------------------------
+#   TÍTULOS
+#--------------------------------------------------------- 
 
 h1, h2, h3 {
     font-family: 'Poppins', sans-serif !important;
