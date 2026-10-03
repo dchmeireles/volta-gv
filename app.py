@@ -274,8 +274,6 @@ if st.session_state["pagina"] == "inicio":
     # ⚠️ CERTIFIQUE-SE DE QUE ESTA LINHA TEM EXATAMENTE 4 ESPAÇOS DE IDENTAÇÃO:
     st.subheader("O que você precisa hoje?")
 
-    col1, col2 = st.columns(2)sa hoje?")
-
     col1, col2 = st.columns(2)
 
     with col1:
