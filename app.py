@@ -9,7 +9,7 @@ import json
 # CONFIGURAÇÃO DA PLANILHA DO GOOGLE SHEETS
 # ============================================================
 # ⚠️ Cole aqui o ID da sua planilha (está no link do seu navegador entre /d/ e /edit)
-ID_DA_PLANILHA = "COLE_AQUI_O_ID_DA_SUA_PLANILHA"
+ID_DA_PLANILHA = "1NEc7aUPUXVr2HsLicKy3oZfRlEPntZROSxbHlHALmko"
 
 # ============================================================
 # CONFIGURAÇÃO DA PÁGINA
