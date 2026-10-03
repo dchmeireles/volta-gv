@@ -1,120 +1,601 @@
-
 import streamlit as st
+
+# ============================================================
+# CONFIGURAÇÃO
+# ============================================================
 
 st.set_page_config(
     page_title="Volta GV",
     page_icon="💜",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="expanded"
 )
 
-# ==============================
-# CONFIGURAÇÃO
-# ==============================
+# ============================================================
+# IDENTIDADE VISUAL
+# ============================================================
+
+st.markdown("""
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+
+/* ---------------------------------------------------------
+   GERAL
+--------------------------------------------------------- */
+
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
+
+.stApp {
+    background: #FAF9FC;
+}
+
+/* largura principal */
+
+.block-container {
+    max-width: 900px;
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+}
+
+/* ---------------------------------------------------------
+   TÍTULOS
+--------------------------------------------------------- */
+
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif !important;
+    color: #43266F !important;
+}
+
+h1 {
+    font-size: 2.4rem !important;
+    font-weight: 700 !important;
+}
+
+h2 {
+    font-size: 1.7rem !important;
+}
+
+h3 {
+    font-size: 1.25rem !important;
+}
+
+/* ---------------------------------------------------------
+   SIDEBAR
+--------------------------------------------------------- */
+
+section[data-testid="stSidebar"] {
+    background: #43266F;
+}
+
+section[data-testid="stSidebar"] * {
+    color: white !important;
+}
+
+section[data-testid="stSidebar"] .stButton > button {
+    background: transparent;
+    border: none;
+    color: white !important;
+    text-align: left;
+    font-size: 1rem;
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
+    transition: 0.2s;
+}
+
+section[data-testid="stSidebar"] .stButton > button:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+/* ---------------------------------------------------------
+   BOTÕES
+--------------------------------------------------------- */
+
+.stButton > button {
+    border-radius: 12px;
+    border: none;
+    background: #6C3FB5;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.stButton > button:hover {
+    background: #43266F;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* ---------------------------------------------------------
+   CAMPOS
+--------------------------------------------------------- */
+
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input {
+    border-radius: 10px;
+    border: 1px solid #DDD5E8;
+}
+
+.stSelectbox div[data-baseweb="select"],
+.stMultiSelect div[data-baseweb="select"] {
+    border-radius: 10px;
+}
+
+/* ---------------------------------------------------------
+   HERO
+--------------------------------------------------------- */
+
+.hero {
+    background: linear-gradient(
+        135deg,
+        #F1EAF9 0%,
+        #FFFFFF 100%
+    );
+
+    border-radius: 24px;
+
+    padding: 3rem 2.5rem;
+
+    margin-bottom: 2rem;
+
+    border: 1px solid #E7DDF2;
+}
+
+.hero-title {
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 3rem;
+
+    font-weight: 700;
+
+    color: #43266F;
+
+    margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+
+    color: #5B5364;
+
+    line-height: 1.6;
+
+    margin-bottom: 1rem;
+}
+
+/* ---------------------------------------------------------
+   CARTÕES
+--------------------------------------------------------- */
+
+.card {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 1.5rem;
+
+    margin-bottom: 1rem;
+
+    border: 1px solid #E9E3EF;
+
+    box-shadow: 0 4px 18px rgba(67,38,111,0.06);
+}
+
+.card-title {
+    font-family: 'Poppins', sans-serif;
+
+    color: #43266F;
+
+    font-size: 1.2rem;
+
+    font-weight: 600;
+
+    margin-bottom: 0.4rem;
+}
+
+.card-text {
+    color: #625A6B;
+
+    line-height: 1.5;
+}
+
+/* ---------------------------------------------------------
+   PLANO
+--------------------------------------------------------- */
+
+.plan-card {
+    background: white;
+
+    border-left: 5px solid #6C3FB5;
+
+    border-radius: 14px;
+
+    padding: 1.4rem;
+
+    margin: 1rem 0;
+
+    box-shadow: 0 3px 14px rgba(67,38,111,0.07);
+}
+
+.plan-title {
+    color: #43266F;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 1.15rem;
+
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------
+   DIVISOR
+--------------------------------------------------------- */
+
+hr {
+    border: none;
+
+    border-top: 1px solid #E8E1ED;
+
+    margin: 2rem 0;
+}
+
+/* ---------------------------------------------------------
+   ALERTAS
+--------------------------------------------------------- */
+
+div[data-testid="stAlert"] {
+    border-radius: 12px;
+}
+
+/* ---------------------------------------------------------
+   RODAPÉ
+--------------------------------------------------------- */
+
+.footer {
+    text-align: center;
+
+    color: #8A8191;
+
+    font-size: 0.85rem;
+
+    margin-top: 4rem;
+
+    padding-top: 1.5rem;
+
+    border-top: 1px solid #E8E1ED;
+}
+
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+    .block-container {
+        padding: 1.2rem 1rem 3rem 1rem;
+    }
+
+    .hero {
+        padding: 2rem 1.3rem;
+        border-radius: 18px;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem !important;
+    }
+
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# ESTADO
+# ============================================================
 
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "inicio"
 
-# ==============================
+
+# ============================================================
 # MENU
-# ==============================
+# ============================================================
 
 def menu():
-    st.sidebar.title("💜 Volta GV")
 
-    if st.sidebar.button("🏠 Início"):
+    st.sidebar.markdown(
+        """
+        <div style="
+            text-align:center;
+            padding: 1rem 0 1.5rem 0;
+        ">
+            <div style="
+                font-size:2.5rem;
+                margin-bottom:0.3rem;
+            ">
+                💜
+            </div>
+
+            <div style="
+                font-family:Poppins;
+                font-size:1.4rem;
+                font-weight:700;
+            ">
+                VOLTA GV
+            </div>
+
+            <div style="
+                font-size:0.8rem;
+                opacity:0.8;
+                margin-top:0.3rem;
+            ">
+                Seu caminho de volta
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.sidebar.markdown("---")
+
+    if st.sidebar.button("🏠  Início", use_container_width=True):
         st.session_state["pagina"] = "inicio"
 
-    if st.sidebar.button("🔎 Encontrar trabalho"):
+    if st.sidebar.button("🔎  Encontrar trabalho", use_container_width=True):
         st.session_state["pagina"] = "trabalho"
 
-    if st.sidebar.button("📄 Meu currículo"):
+    if st.sidebar.button("📄  Meu currículo", use_container_width=True):
         st.session_state["pagina"] = "curriculo"
 
-    if st.sidebar.button("📚 Cursos"):
+    if st.sidebar.button("📚  Cursos", use_container_width=True):
         st.session_state["pagina"] = "cursos"
 
-    if st.sidebar.button("❤️ Preciso de ajuda"):
+    if st.sidebar.button("❤️  Preciso de ajuda", use_container_width=True):
         st.session_state["pagina"] = "ajuda"
+
+    st.sidebar.markdown(
+        """
+        <div style="
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            text-align:center;
+            font-size:0.75rem;
+            opacity:0.65;
+        ">
+            Governador Valadares · MG
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 menu()
 
-# ==============================
+
+# ============================================================
 # INÍCIO
-# ==============================
+# ============================================================
 
 if st.session_state["pagina"] == "inicio":
 
-    st.title("💜 Volta GV")
+    st.markdown(
+        """
+        <div class="hero">
 
-    st.subheader(
-        "Encontre oportunidades e caminhos "
-        "para voltar ao mercado de trabalho."
+            <div class="hero-title">
+                VOLTA GV
+            </div>
+
+            <div class="hero-subtitle">
+                Seu caminho de volta começa aqui.
+            </div>
+
+            <div style="
+                color:#625A6B;
+                line-height:1.6;
+                font-size:1rem;
+            ">
+                Encontre oportunidades, cursos e caminhos
+                para voltar ao mercado de trabalho em
+                Governador Valadares.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
+    st.markdown(
+        """
+        <h2 style="margin-bottom:1rem;">
+            O que você precisa hoje?
+        </h2>
+        """,
+        unsafe_allow_html=True
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.markdown(
+            """
+            <div class="card">
+
+                <div style="font-size:2rem;">
+                    🔎
+                </div>
+
+                <div class="card-title">
+                    Encontrar trabalho
+                </div>
+
+                <div class="card-text">
+                    Conte um pouco sobre seu perfil
+                    e encontre caminhos profissionais
+                    compatíveis com você.
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if st.button(
+            "Encontrar oportunidades →",
+            key="btn_trabalho",
+            use_container_width=True
+        ):
+            st.session_state["pagina"] = "trabalho"
+            st.rerun()
+
+    with col2:
+
+        st.markdown(
+            """
+            <div class="card">
+
+                <div style="font-size:2rem;">
+                    📄
+                </div>
+
+                <div class="card-title">
+                    Melhorar meu currículo
+                </div>
+
+                <div class="card-text">
+                    Organize sua experiência,
+                    formação e objetivos profissionais.
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if st.button(
+            "Criar meu currículo →",
+            key="btn_curriculo",
+            use_container_width=True
+        ):
+            st.session_state["pagina"] = "curriculo"
+            st.rerun()
+
+    col3, col4 = st.columns(2)
+
+    with col3:
+
+        st.markdown(
+            """
+            <div class="card">
+
+                <div style="font-size:2rem;">
+                    📚
+                </div>
+
+                <div class="card-title">
+                    Encontrar um curso
+                </div>
+
+                <div class="card-text">
+                    Descubra oportunidades gratuitas
+                    de qualificação.
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if st.button(
+            "Ver cursos →",
+            key="btn_cursos",
+            use_container_width=True
+        ):
+            st.session_state["pagina"] = "cursos"
+            st.rerun()
+
+    with col4:
+
+        st.markdown(
+            """
+            <div class="card">
+
+                <div style="font-size:2rem;">
+                    ❤️
+                </div>
+
+                <div class="card-title">
+                    Preciso de ajuda
+                </div>
+
+                <div class="card-text">
+                    Conte o que está dificultando
+                    sua volta ao mercado.
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if st.button(
+            "Pedir ajuda →",
+            key="btn_ajuda",
+            use_container_width=True
+        ):
+            st.session_state["pagina"] = "ajuda"
+            st.rerun()
+
+
+# ============================================================
+# TRABALHO
+# ============================================================
+
+elif st.session_state["pagina"] == "trabalho":
+
+    st.title("🔎 Encontrar oportunidades")
+
     st.write(
-        """
-        O Volta GV é um espaço pensado para mulheres
-        de Governador Valadares que querem voltar ao
-        mercado de trabalho depois da maternidade ou
-        de um período fora do mercado.
-        """
+        "Conte um pouco sobre você para encontrarmos "
+        "caminhos compatíveis com seu perfil."
     )
 
     st.divider()
 
-    st.write("### O que você precisa hoje?")
-
-    if st.button(
-        "🔎 Quero encontrar trabalho",
-        use_container_width=True
-    ):
-        st.session_state["pagina"] = "trabalho"
-
-    if st.button(
-        "📄 Quero melhorar meu currículo",
-        use_container_width=True
-    ):
-        st.session_state["pagina"] = "curriculo"
-
-    if st.button(
-        "📚 Quero encontrar um curso",
-        use_container_width=True
-    ):
-        st.session_state["pagina"] = "cursos"
-
-    if st.button(
-        "❤️ Preciso de ajuda",
-        use_container_width=True
-    ):
-        st.session_state["pagina"] = "ajuda"
-
-
-# ==============================
-# PERFIL / TRABALHO
-# ==============================
-
-elif st.session_state["pagina"] == "trabalho":
-
-    st.title("🔎 Vamos encontrar oportunidades")
-
-    st.write(
-        "Conte um pouco sobre você para encontrarmos "
-        "oportunidades compatíveis com seu perfil."
-    )
+    st.subheader("Sobre você")
 
     nome = st.text_input("Como você se chama?")
 
-    idade = st.number_input(
-        "Qual sua idade?",
-        min_value=18,
-        max_value=80,
-        value=30
-    )
+    col1, col2 = st.columns(2)
 
-    bairro = st.text_input(
-        "Em qual bairro você mora?"
-    )
+    with col1:
+        idade = st.number_input(
+            "Qual sua idade?",
+            min_value=18,
+            max_value=80,
+            value=30
+        )
+
+    with col2:
+        bairro = st.text_input(
+            "Em qual bairro você mora?"
+        )
 
     escolaridade = st.selectbox(
         "Qual sua escolaridade?",
@@ -145,9 +626,12 @@ elif st.session_state["pagina"] == "trabalho":
         ]
     )
 
+    st.subheader("Sua rotina")
+
     filhos = st.radio(
         "Você tem filhos?",
-        ["Sim", "Não"]
+        ["Sim", "Não"],
+        horizontal=True
     )
 
     idade_filho = None
@@ -183,7 +667,7 @@ elif st.session_state["pagina"] == "trabalho":
         ]
     )
 
-    st.write("### O que está dificultando sua volta?")
+    st.subheader("O que está dificultando sua volta?")
 
     barreiras = st.multiselect(
         "Escolha todas que se aplicam.",
@@ -201,6 +685,8 @@ elif st.session_state["pagina"] == "trabalho":
             "Outra"
         ]
     )
+
+    st.divider()
 
     if st.button(
         "💜 Criar meu plano de volta",
@@ -226,60 +712,112 @@ elif st.session_state["pagina"] == "trabalho":
         st.rerun()
 
 
-# ==============================
-# PLANO DE VOLTA
-# ==============================
+# ============================================================
+# PLANO
+# ============================================================
 
 elif st.session_state["pagina"] == "plano":
-
-    st.title("💜 Seu caminho de volta")
 
     perfil = st.session_state.get("perfil", {})
 
     nome = perfil.get("nome", "")
 
+    st.title("💜 Seu caminho de volta")
+
     st.success(
         f"Olá, {nome}! Criamos um primeiro plano para você."
     )
 
-    st.write("### 🔎 Oportunidades")
-
-    st.info(
-        "Em breve mostraremos vagas compatíveis "
-        "com seu perfil."
+    st.write(
+        "A partir das informações que você forneceu, "
+        "vamos organizar alguns caminhos possíveis."
     )
 
-    st.write("### 📚 Qualificação")
+    st.markdown(
+        """
+        <div class="plan-card">
 
-    st.info(
-        "Vamos procurar cursos que possam aumentar "
-        "suas oportunidades."
+            <div class="plan-title">
+                🔎 Oportunidades
+            </div>
+
+            <p>
+                Em breve mostraremos vagas compatíveis
+                com seu perfil.
+            </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    st.write("### 📄 Currículo")
+    st.markdown(
+        """
+        <div class="plan-card">
 
-    st.info(
-        "Você poderá criar ou atualizar seu currículo."
+            <div class="plan-title">
+                📚 Qualificação
+            </div>
+
+            <p>
+                Vamos procurar cursos que possam
+                ampliar suas oportunidades.
+            </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    st.write("### ❤️ Apoio")
+    st.markdown(
+        """
+        <div class="plan-card">
+
+            <div class="plan-title">
+                📄 Currículo
+            </div>
+
+            <p>
+                Você poderá criar ou atualizar
+                seu currículo.
+            </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <div class="plan-card">
+
+            <div class="plan-title">
+                ❤️ Apoio
+            </div>
+
+            <p>
+                Vamos identificar os principais
+                obstáculos para sua volta.
+            </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     barreiras = perfil.get("barreiras", [])
 
     if barreiras:
 
-        st.write(
-            "Você informou que estas questões "
-            "dificultam sua volta:"
-        )
+        st.subheader("Pontos que você identificou")
 
         for b in barreiras:
             st.write("• " + b)
 
 
-# ==============================
+# ============================================================
 # CURRÍCULO
-# ==============================
+# ============================================================
 
 elif st.session_state["pagina"] == "curriculo":
 
@@ -289,6 +827,8 @@ elif st.session_state["pagina"] == "curriculo":
         "Vamos criar um currículo simples "
         "e profissional."
     )
+
+    st.divider()
 
     nome = st.text_input("Nome completo")
 
@@ -309,7 +849,7 @@ elif st.session_state["pagina"] == "curriculo":
     )
 
     if st.button(
-        "Criar meu currículo",
+        "💜 Criar meu currículo",
         use_container_width=True
     ):
 
@@ -332,9 +872,9 @@ elif st.session_state["pagina"] == "curriculo":
         st.write(cursos)
 
 
-# ==============================
+# ============================================================
 # CURSOS
-# ==============================
+# ============================================================
 
 elif st.session_state["pagina"] == "cursos":
 
@@ -345,19 +885,43 @@ elif st.session_state["pagina"] == "cursos":
         "e oportunidades de qualificação."
     )
 
-    st.info(
-        "Ainda vamos cadastrar os cursos "
-        "disponíveis em Governador Valadares."
+    st.markdown(
+        """
+        <div class="card">
+
+            <div style="font-size:2rem;">
+                📚
+            </div>
+
+            <div class="card-title">
+                Oportunidades de qualificação
+            </div>
+
+            <div class="card-text">
+                Ainda vamos cadastrar os cursos
+                disponíveis em Governador Valadares.
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 
-# ==============================
+# ============================================================
 # AJUDA
-# ==============================
+# ============================================================
 
 elif st.session_state["pagina"] == "ajuda":
 
     st.title("❤️ Preciso de ajuda")
+
+    st.write(
+        "Conte o que está dificultando sua volta. "
+        "Sua resposta ajudará a direcionar o atendimento."
+    )
+
+    st.divider()
 
     problema = st.selectbox(
         "O que está dificultando sua volta?",
@@ -377,10 +941,26 @@ elif st.session_state["pagina"] == "ajuda":
     )
 
     if st.button(
-        "Enviar",
+        "💜 Enviar",
         use_container_width=True
     ):
 
         st.success(
             "Sua solicitação foi registrada."
         )
+
+
+# ============================================================
+# RODAPÉ
+# ============================================================
+
+st.markdown(
+    """
+    <div class="footer">
+        <strong>VOLTA GV</strong><br>
+        Conectando mulheres a oportunidades em
+        Governador Valadares.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
