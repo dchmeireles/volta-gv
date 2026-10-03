@@ -14,117 +14,20 @@ st.set_page_config(
 # IDENTIDADE VISUAL
 # ============================================================
 
-st.markdown("""
-<style>
+# ============================================================
+# IDENTIDADE VISUAL
+# ============================================================
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
-
-.stApp {
-    background-color: #FAF9FC;
-}
-
-.block-container {
-    padding-top: 2.5rem;
-    padding-bottom: 3rem;
-}
-
-/* Títulos */
-h1, h2, h3 {
-    font-family: 'Poppins', sans-serif !important;
-    color: #43266F !important;
-}
-
-h1 {
-    font-weight: 700 !important;
-}
-
-/* Textos */
-p, label {
-    font-family: 'Inter', sans-serif;
-}
-
-/* Botões */
-.stButton > button {
-    background-color: #6C3FB5;
-    color: white;
-    border: 0;
-    border-radius: 10px;
-    font-weight: 600;
-}
-
-.stButton > button:hover {
-    background-color: #43266F;
-    color: white;
-}
-
-/* Campos */
-.stTextInput input,
-.stTextArea textarea,
-.stNumberInput input {
-    border-radius: 8px;
-}
-
-/* Hero */
-.volta-hero {
-    background-color: #F1EAF9;
-    border: 1px solid #E5D8F0;
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    margin-bottom: 2rem;
-}
-
-/* Logo */
-.volta-logo {
-    font-family: 'Poppins', sans-serif;
-    font-size: 2.4rem !important;
-    font-weight: 700;
-    color: #43266F;
-    letter-spacing: -1px;
-}
-
-.volta-subtitulo {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.2rem;
-    color: #5B5364;
-    line-height: 1.6;
-    margin-top: 0.5rem;
-}
-
-/* Cards */
-.volta-card {
-    background-color: white;
-    border: 1px solid #E8E1ED;
-    border-radius: 16px;
-    padding: 1.4rem;
-    margin-bottom: 1rem;
-}
-
-.volta-card-titulo {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #43266F;
-}
-
-.volta-card-texto {
-    color: #625A6B;
-    line-height: 1.5;
-    margin-top: 0.4rem;
-}
-
-/* Rodapé */
-.volta-footer {
-    text-align: center;
-    color: #8A8191;
-    font-size: 0.8rem;
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
+st.markdown(
+    """
+    <style>
+        .stApp {
+            background-color: #FAF9FC;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ---------------------------------------------------------
