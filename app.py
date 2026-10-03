@@ -1,3 +1,35 @@
+def salvar_no_google_sheets(nome_aba, dados_linha):
+    """
+    Envia uma lista de dados para a planilha especificada.
+    `nome_aba` pode ser: 'Oportunidades', 'Ajuda', etc.
+    `dados_linha` deve ser uma lista de valores: [data_hora, nome, ...]
+    """
+    try:
+        # Autenticação usando o arquivo credentials.json
+        escopos = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+        creds = Credentials.from_service_account_file("credentials.json", scopes=escopos)
+        client = gspread.authorize(creds)
+
+        # Abre a planilha pelo nome exato
+        planilha = client.open("Respostas Volta GV")
+        
+        # Seleciona a aba (se não existir, usa a primeira)
+        try:
+            aba = planilha.worksheet(nome_aba)
+        except:
+            aba = planilha.sheet1
+
+        # Adiciona os dados na última linha
+        aba.append_row(dados_linha)
+        return True
+    except Exception as e:
+        st.error(f"Erro ao salvar na planilha: {e}")
+        return False
+
+
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
