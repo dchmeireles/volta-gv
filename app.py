@@ -2,6 +2,7 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
+import os
 
 # ============================================================
 # CONFIGURAÇÃO DA PÁGINA
@@ -14,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Inicialização do estado da página para evitar erros de navegação
+# Inicialização do estado da página
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "inicio"
 
@@ -24,11 +25,9 @@ if "pagina" not in st.session_state:
 
 def salvar_no_google_sheets(nome_aba, dados_linha):
     """
-    Autentica via Service Account e adiciona uma linha de dados na planilha especificada.
-    
-    Parâmetros:
-    - nome_aba (str): Nome da aba na planilha (ex: 'Perfil', 'Ajuda')
-    - dados_linha (list): Lista com os valores das colunas para inserir
+    Salva dados na planilha 'Respostas Volta GV'.
+    Carrega credenciais de forma híbrida: localmente (via credentials.json) 
+    ou na nuvem (via st.secrets).
     """
     try:
         escopos = [
@@ -36,11 +35,23 @@ def salvar_no_google_sheets(nome_aba, dados_linha):
             "https://www.googleapis.com/auth/drive"
         ]
         
-        # Carrega credenciais do arquivo local
-        creds = Credentials.from_service_account_file("credentials.json", scopes=escopos)
-        client = gspread.authorize(creds)
+        # 1. Tenta carregar do Streamlit Secrets (Servidor/Nuvem)
+        if "gcp_service_account" in st.secrets:
+            creds_dict = dict(st.secrets["gcp_service_account"])
+            creds = Credentials.from_service_account_info(creds_dict, scopes=escopos)
+        
+        # 2. Se não estiver na nuvem, busca o arquivo credentials.json no PC
+        else:
+            diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+            caminho_credentials = os.path.join(diretorio_atual, "credentials.json")
+            
+            if not os.path.exists(caminho_credentials):
+                st.error("Arquivo credentials.json não encontrado no seu computador nem no st.secrets.")
+                return False
+                
+            creds = Credentials.from_service_account_file(caminho_credentials, scopes=escopos)
 
-        # Abre a planilha pelo nome exato (deve estar compartilhada com o e-mail da service account)
+        client = gspread.authorize(creds)
         planilha = client.open("Respostas Volta GV")
         
         try:
@@ -55,7 +66,7 @@ def salvar_no_google_sheets(nome_aba, dados_linha):
         return False
 
 # ============================================================
-# ESTILOS CSS PERSONALIZADOS
+# ESTILOS VISUAIS (CSS)
 # ============================================================
 
 st.markdown(
@@ -168,7 +179,7 @@ st.markdown(
 )
 
 # ============================================================
-# NAVEGAÇÃO / MENU LATERAL
+# MENU LATERAL
 # ============================================================
 
 def menu():
@@ -217,13 +228,13 @@ def menu():
 menu()
 
 # ============================================================
-# PÁGINA 1: INÍCIO
+# INÍCIO
 # ============================================================
 
 if st.session_state["pagina"] == "inicio":
 
     st.image(
-        "https://www.hojeemdia.com.br/image/policy:1.998152.1706622392:1706622392/image.jpg?f=2x1&w=1200",
+        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
         caption="Governador Valadares - MG",
         use_container_width=True
     )
@@ -296,7 +307,7 @@ if st.session_state["pagina"] == "inicio":
         st.markdown(
             """
             <div class="card">
-                <div style="font-size:2rem;">❤️️</div>
+                <div style="font-size:2rem;">❤️</div>
                 <div class="card-title">Preciso de ajuda</div>
                 <div class="card-text">Conte o que está dificultando sua volta ao mercado.</div>
             </div>
@@ -308,7 +319,7 @@ if st.session_state["pagina"] == "inicio":
             st.rerun()
 
 # ============================================================
-# PÁGINA 2: TRABALHO
+# TRABALHO
 # ============================================================
 
 elif st.session_state["pagina"] == "trabalho":
@@ -405,7 +416,7 @@ elif st.session_state["pagina"] == "trabalho":
             "barreiras": barreiras
         }
 
-        # Preparação dos dados para envio ao Google Sheets
+        # Salva dados na planilha
         data_envio = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         modalidades_str = ", ".join(modalidade) if modalidade else ""
         barreiras_str = ", ".join(barreiras) if barreiras else ""
@@ -425,14 +436,13 @@ elif st.session_state["pagina"] == "trabalho":
             barreiras_str
         ]
 
-        # Envia para a aba 'Perfil' da planilha "Respostas Volta GV"
         salvar_no_google_sheets("Perfil", linha_dados)
 
         st.session_state["pagina"] = "plano"
         st.rerun()
 
 # ============================================================
-# PÁGINA 3: PLANO GENERADO
+# PLANO
 # ============================================================
 
 elif st.session_state["pagina"] == "plano":
@@ -472,7 +482,7 @@ elif st.session_state["pagina"] == "plano":
             st.write(f"• {b}")
 
 # ============================================================
-# PÁGINA 4: CURRÍCULO
+# CURRÍCULO
 # ============================================================
 
 elif st.session_state["pagina"] == "curriculo":
@@ -502,7 +512,7 @@ elif st.session_state["pagina"] == "curriculo":
         st.write(cursos)
 
 # ============================================================
-# PÁGINA 5: CURSOS
+# CURSOS
 # ============================================================
 
 elif st.session_state["pagina"] == "cursos":
@@ -522,7 +532,7 @@ elif st.session_state["pagina"] == "cursos":
     )
 
 # ============================================================
-# PÁGINA 6: PRECISO DE AJUDA
+# PRECISO DE AJUDA
 # ============================================================
 
 elif st.session_state["pagina"] == "ajuda":
@@ -555,7 +565,6 @@ elif st.session_state["pagina"] == "ajuda":
             descricao
         ]
 
-        # Envia para a aba 'Ajuda' da planilha "Respostas Volta GV"
         sucesso = salvar_no_google_sheets("Ajuda", linha_ajuda)
         
         if sucesso:
