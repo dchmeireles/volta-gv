@@ -190,7 +190,32 @@ menu()
 # ============================================================
 # INÍCIO
 # ============================================================
+# ============================================================
+# INÍCIO
+# ============================================================
 
+if st.session_state["pagina"] == "inicio":
+
+    # Imagem de Destaque no Topo da Página
+    st.image(
+        "https://upload.wikimedia.org/wikipedia/commons/8/88/Pico_da_Ibituruna_Governador_Valadares.jpg",
+        caption="Governador Valadares - MG",
+        use_container_width=True
+    )
+
+    st.markdown(
+        """
+        <div class="hero">
+            <div class="hero-title">VOLTA GV</div>
+            <div class="hero-subtitle">Seu caminho de volta começa aqui.</div>
+            <p style="margin:0; font-size:0.95rem; opacity:0.95;">
+                Encontre oportunidades, cursos e caminhos para voltar ao mercado de trabalho em Governador Valadares.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
 if st.session_state["pagina"] == "inicio":
 
     st.markdown(
