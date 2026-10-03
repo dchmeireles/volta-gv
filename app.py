@@ -1,42 +1,10 @@
-def salvar_no_google_sheets(nome_aba, dados_linha):
-    """
-    Envia uma lista de dados para a planilha especificada.
-    `nome_aba` pode ser: 'Oportunidades', 'Ajuda', etc.
-    `dados_linha` deve ser uma lista de valores: [data_hora, nome, ...]
-    """
-    try:
-        # Autenticação usando o arquivo credentials.json
-        escopos = [
-            "https://www.googleapis.com/auth/spreadsheets",
-            "https://www.googleapis.com/auth/drive"
-        ]
-        creds = Credentials.from_service_account_file("credentials.json", scopes=escopos)
-        client = gspread.authorize(creds)
-
-        # Abre a planilha pelo nome exato
-        planilha = client.open("Respostas Volta GV")
-        
-        # Seleciona a aba (se não existir, usa a primeira)
-        try:
-            aba = planilha.worksheet(nome_aba)
-        except:
-            aba = planilha.sheet1
-
-        # Adiciona os dados na última linha
-        aba.append_row(dados_linha)
-        return True
-    except Exception as e:
-        st.error(f"Erro ao salvar na planilha: {e}")
-        return False
-
-
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 
 # ============================================================
-# CONFIGURAÇÃO
+# CONFIGURAÇÃO DA PÁGINA
 # ============================================================
 
 st.set_page_config(
@@ -46,18 +14,53 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Inicialização do estado da página para evitar KeyError
+# Inicialização do estado da página para evitar erros de navegação
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "inicio"
 
 # ============================================================
-# IDENTIDADE VISUAL & ESTILOS (CSS COMPLETO)
+# FUNÇÃO DE INTEGRAÇÃO COM O GOOGLE SHEETS
+# ============================================================
+
+def salvar_no_google_sheets(nome_aba, dados_linha):
+    """
+    Autentica via Service Account e adiciona uma linha de dados na planilha especificada.
+    
+    Parâmetros:
+    - nome_aba (str): Nome da aba na planilha (ex: 'Perfil', 'Ajuda')
+    - dados_linha (list): Lista com os valores das colunas para inserir
+    """
+    try:
+        escopos = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+        
+        # Carrega credenciais do arquivo local
+        creds = Credentials.from_service_account_file("credentials.json", scopes=escopos)
+        client = gspread.authorize(creds)
+
+        # Abre a planilha pelo nome exato (deve estar compartilhada com o e-mail da service account)
+        planilha = client.open("Respostas Volta GV")
+        
+        try:
+            aba = planilha.worksheet(nome_aba)
+        except Exception:
+            aba = planilha.sheet1
+
+        aba.append_row(dados_linha)
+        return True
+    except Exception as e:
+        st.error(f"Erro ao conectar com o Google Sheets: {e}")
+        return False
+
+# ============================================================
+# ESTILOS CSS PERSONALIZADOS
 # ============================================================
 
 st.markdown(
     """
     <style>
-    /* Fundo da Aplicação */
     .stApp {
         background-color: #FAF9FC;
     }
@@ -67,13 +70,11 @@ st.markdown(
         padding-bottom: 3rem;
     }
 
-    /* Tipografia */
     h1, h2, h3 {
         color: #43266F !important;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Botões Padrão */
     .stButton > button {
         background-color: #6C3FB5;
         color: white;
@@ -90,7 +91,6 @@ st.markdown(
         border: none;
     }
 
-    /* Hero Section */
     .hero {
         background: linear-gradient(135deg, #43266F 0%, #6C3FB5 100%);
         padding: 2.5rem;
@@ -114,7 +114,6 @@ st.markdown(
         font-weight: 500;
     }
 
-    /* Cards Informativos */
     .card {
         background-color: white;
         padding: 1.5rem;
@@ -139,7 +138,6 @@ st.markdown(
         line-height: 1.4;
     }
 
-    /* Plan Cards */
     .plan-card {
         background-color: white;
         border-left: 5px solid #6C3FB5;
@@ -156,7 +154,6 @@ st.markdown(
         margin-bottom: 0.3rem;
     }
 
-    /* Rodapé */
     .footer {
         text-align: center;
         padding: 2rem 0 1rem 0;
@@ -171,7 +168,7 @@ st.markdown(
 )
 
 # ============================================================
-# MENU
+# NAVEGAÇÃO / MENU LATERAL
 # ============================================================
 
 def menu():
@@ -220,14 +217,13 @@ def menu():
 menu()
 
 # ============================================================
-# INÍCIO
+# PÁGINA 1: INÍCIO
 # ============================================================
 
 if st.session_state["pagina"] == "inicio":
 
-    # Imagem confiável de topo
     st.image(
-        "https://www.hojeemdia.com.br/image/policy:1.998152.1706622392:1706622392/image.jpg?f=2x1&w=1200",
+        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
         caption="Governador Valadares - MG",
         use_container_width=True
     )
@@ -300,7 +296,7 @@ if st.session_state["pagina"] == "inicio":
         st.markdown(
             """
             <div class="card">
-                <div style="font-size:2rem;">❤️</div>
+                <div style="font-size:2rem;">❤️️</div>
                 <div class="card-title">Preciso de ajuda</div>
                 <div class="card-text">Conte o que está dificultando sua volta ao mercado.</div>
             </div>
@@ -312,7 +308,7 @@ if st.session_state["pagina"] == "inicio":
             st.rerun()
 
 # ============================================================
-# TRABALHO
+# PÁGINA 2: TRABALHO
 # ============================================================
 
 elif st.session_state["pagina"] == "trabalho":
@@ -408,11 +404,35 @@ elif st.session_state["pagina"] == "trabalho":
             "modalidade": modalidade,
             "barreiras": barreiras
         }
+
+        # Preparação dos dados para envio ao Google Sheets
+        data_envio = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        modalidades_str = ", ".join(modalidade) if modalidade else ""
+        barreiras_str = ", ".join(barreiras) if barreiras else ""
+
+        linha_dados = [
+            data_envio,
+            nome,
+            idade,
+            bairro,
+            escolaridade,
+            experiencia,
+            tempo_fora,
+            filhos,
+            idade_filho if idade_filho is not None else "N/A",
+            horas,
+            modalidades_str,
+            barreiras_str
+        ]
+
+        # Envia para a aba 'Perfil' da planilha "Respostas Volta GV"
+        salvar_no_google_sheets("Perfil", linha_dados)
+
         st.session_state["pagina"] = "plano"
         st.rerun()
 
 # ============================================================
-# PLANO
+# PÁGINA 3: PLANO GENERADO
 # ============================================================
 
 elif st.session_state["pagina"] == "plano":
@@ -425,25 +445,21 @@ elif st.session_state["pagina"] == "plano":
     if nome:
         st.success(f"Olá, {nome}! Criamos um primeiro plano para você.")
 
-    st.write("A partir das informações que você forneceu, vamos organizar alguns caminhos possíveis.")
+    st.write("A partir das informações que você forneceu, organizamos os seguintes caminhos:")
 
     st.markdown(
         """
         <div class="plan-card">
             <div class="plan-title">🔎 Oportunidades</div>
-            <p style="margin:0; color:#625A6B;">Em breve mostraremos vagas compatíveis com seu perfil.</p>
+            <p style="margin:0; color:#625A6B;">Suas preferências foram registradas no nosso sistema.</p>
         </div>
         <div class="plan-card">
             <div class="plan-title">📚 Qualificação</div>
-            <p style="margin:0; color:#625A6B;">Vamos procurar cursos que possam ampliar suas oportunidades.</p>
+            <p style="margin:0; color:#625A6B;">Procuraremos cursos alinhados com seu perfil educacional.</p>
         </div>
         <div class="plan-card">
             <div class="plan-title">📄 Currículo</div>
-            <p style="margin:0; color:#625A6B;">Você poderá criar ou atualizar seu currículo.</p>
-        </div>
-        <div class="plan-card">
-            <div class="plan-title">❤️ Apoio</div>
-            <p style="margin:0; color:#625A6B;">Vamos identificar os principais obstáculos para sua volta.</p>
+            <p style="margin:0; color:#625A6B;">Acesse a aba 'Meu currículo' no menu para estruturar seu histórico.</p>
         </div>
         """,
         unsafe_allow_html=True
@@ -451,18 +467,18 @@ elif st.session_state["pagina"] == "plano":
 
     barreiras = perfil.get("barreiras", [])
     if barreiras:
-        st.subheader("Pontos que você identificou:")
+        st.subheader("Obstáculos registrados:")
         for b in barreiras:
             st.write(f"• {b}")
 
 # ============================================================
-# CURRÍCULO
+# PÁGINA 4: CURRÍCULO
 # ============================================================
 
 elif st.session_state["pagina"] == "curriculo":
 
     st.title("📄 Meu currículo")
-    st.write("Vamos criar um currículo simples e profissional.")
+    st.write("Preencha as informações para estruturar um currículo simples.")
     st.divider()
 
     nome = st.text_input("Nome completo")
@@ -471,56 +487,52 @@ elif st.session_state["pagina"] == "curriculo":
     formacao = st.text_area("Conte sua formação.")
     cursos = st.text_area("Quais cursos você já fez?")
 
-    if st.button("💜 Criar meu currículo", use_container_width=True):
-        st.success("Currículo criado!")
+    if st.button("💜 Gerar visualização", use_container_width=True):
+        st.success("Visualização pronta!")
         st.divider()
 
         st.header(nome if nome else "Seu Nome")
-
         st.subheader("Objetivo profissional")
         st.write(objetivo)
-
         st.subheader("Experiência")
         st.write(experiencia)
-
         st.subheader("Formação")
         st.write(formacao)
-
         st.subheader("Cursos")
         st.write(cursos)
 
 # ============================================================
-# CURSOS
+# PÁGINA 5: CURSOS
 # ============================================================
 
 elif st.session_state["pagina"] == "cursos":
 
     st.title("📚 Cursos")
-    st.write("Aqui serão apresentados cursos gratuitos e oportunidades de qualificação.")
+    st.write("Oportunidades de capacitação em Governador Valadares.")
 
     st.markdown(
         """
         <div class="card">
             <div style="font-size:2rem;">📚</div>
-            <div class="card-title">Oportunidades de qualificação</div>
-            <div class="card-text">Ainda vamos cadastrar os cursos disponíveis em Governador Valadares.</div>
+            <div class="card-title">Capacitação Profissional</div>
+            <div class="card-text">Em breve listaremos turmas abertas do SENAC, SESI e parceiros locais.</div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
 # ============================================================
-# AJUDA
+# PÁGINA 6: PRECISO DE AJUDA
 # ============================================================
 
 elif st.session_state["pagina"] == "ajuda":
 
     st.title("❤️ Preciso de ajuda")
-    st.write("Conte o que está dificultando sua volta. Sua resposta ajudará a direcionar o atendimento.")
+    st.write("Conte o que está dificultando sua volta ao trabalho.")
     st.divider()
 
     problema = st.selectbox(
-        "O que está dificultando sua volta?",
+        "Qual a principal dificuldade no momento?",
         [
             "Não sei por onde começar",
             "Preciso encontrar trabalho",
@@ -532,10 +544,22 @@ elif st.session_state["pagina"] == "ajuda":
         ]
     )
 
-    descricao = st.text_area("Conte um pouco mais.")
+    descricao = st.text_area("Descreva com mais detalhes:")
 
-    if st.button("💜 Enviar", use_container_width=True):
-        st.success("Sua solicitação foi registrada.")
+    if st.button("💜 Enviar solicitação", use_container_width=True):
+        data_envio = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        
+        linha_ajuda = [
+            data_envio,
+            problema,
+            descricao
+        ]
+
+        # Envia para a aba 'Ajuda' da planilha "Respostas Volta GV"
+        sucesso = salvar_no_google_sheets("Ajuda", linha_ajuda)
+        
+        if sucesso:
+            st.success("Sua solicitação foi registrada na planilha com sucesso!")
 
 # ============================================================
 # RODAPÉ
