@@ -263,12 +263,12 @@ if st.session_state["pagina"] == "inicio":
         <div class="hero">
             <div class="hero-title">VOLTA GV</div>
             <div class="hero-subtitle">Seu caminho de volta começa aqui.</div>
-            <p style="margin:0; font-size:0.50rem; opacity:0.95;">
+            <p style="margin:0; font-size:0.75rem; opacity:0.95;">
                 Encontre oportunidades, cursos e caminhos para voltar ao mercado de trabalho em Governador Valadares.
             </p>
         </div>
         """,
-        unsafe_allow_html=True
+          width=500
     )
 
     st.subheader("O que você precisa hoje?")
