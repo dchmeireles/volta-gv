@@ -257,13 +257,13 @@ if st.session_state["pagina"] == "inicio":
         caption="Governador Valadares - MG",
         width=300
     )
-    
-st.markdown(
+
+    st.markdown(
         """
-        <div class="hero">
-            <div class="hero-title">VOLTA GV</div>
-            <div class="hero-subtitle">Seu caminho de volta começa aqui.</div>
-            <p style="margin:0; font-size:0.95rem; opacity:0.95;">
+        <div style="max-width: 500px; margin: 0 auto 1.5rem auto; background: linear-gradient(135deg, #43266F 0%, #6C3FB5 100%); padding: 1.2rem; border-radius: 12px; color: white; text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 0.2rem;">VOLTA GV</div>
+            <div style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 0.4rem; font-weight: 500;">Seu caminho de volta começa aqui.</div>
+            <p style="margin: 0; font-size: 0.8rem; opacity: 0.95; line-height: 1.3;">
                 Encontre oportunidades, cursos e caminhos para voltar ao mercado de trabalho em Governador Valadares.
             </p>
         </div>
@@ -271,7 +271,10 @@ st.markdown(
         unsafe_allow_html=True
     )
 
+    # ⚠️ CERTIFIQUE-SE DE QUE ESTA LINHA TEM EXATAMENTE 4 ESPAÇOS DE IDENTAÇÃO:
     st.subheader("O que você precisa hoje?")
+
+    col1, col2 = st.columns(2)sa hoje?")
 
     col1, col2 = st.columns(2)
 
