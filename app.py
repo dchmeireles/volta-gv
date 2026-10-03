@@ -27,8 +27,8 @@ if "pagina" not in st.session_state:
 def salvar_no_google_sheets(nome_aba, dados_linha):
     """
     Salva dados na planilha 'Respostas Volta GV'.
-    Carrega credenciais lendo o JSON direto do st.secrets na nuvem (gcp_json)
-    ou do arquivo credentials.json local no computador.
+    Carrega credenciais tratando gcp_json como string ou dicionário
+    no st.secrets (nuvem) ou do arquivo credentials.json local (computador).
     """
     try:
         escopos = [
@@ -38,7 +38,21 @@ def salvar_no_google_sheets(nome_aba, dados_linha):
         
         # 1. Tenta carregar do Streamlit Secrets (Nuvem / Deploy)
         if "gcp_json" in st.secrets:
-            creds_dict = json.loads(st.secrets["gcp_json"])
+            conteudo_secrets = st.secrets["gcp_json"]
+            
+            # Se o Streamlit já leu como dicionário
+            if isinstance(conteudo_secrets, dict):
+                creds_dict = dict(conteudo_secrets)
+            # Se veio como string JSON pura, faz o parse
+            elif isinstance(conteudo_secrets, str):
+                creds_dict = json.loads(conteudo_secrets)
+            else:
+                creds_dict = dict(conteudo_secrets)
+
+            # Corrige quebras de linha na chave privada se necessário
+            if "private_key" in creds_dict and isinstance(creds_dict["private_key"], str):
+                creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
+
             creds = Credentials.from_service_account_info(creds_dict, scopes=escopos)
         
         # 2. Se não estiver na nuvem, busca o arquivo credentials.json na pasta local
@@ -63,7 +77,7 @@ def salvar_no_google_sheets(nome_aba, dados_linha):
         aba.append_row(dados_linha)
         return True
     except Exception as e:
-        st.error(f"Erro ao conectar com o Google Sheets: {e}")
+        st.error(f"Erro ao conectar com o Google Sheets: {str(e)}")
         return False
 
 # ============================================================
