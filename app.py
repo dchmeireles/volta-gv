@@ -54,27 +54,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-# ---------------------------------------------------------
-#   TÍTULOS
-#--------------------------------------------------------- 
-
-h1, h2, h3 {
-    font-family: 'Poppins', sans-serif !important;
-    color: #43266F !important;
-}
-
-h1 {
-    font-size: 2.4rem !important;
-    font-weight: 700 !important;
-}
-
-h2 {
-    font-size: 1.7rem !important;
-}
-
-h3 {
-    font-size: 1.25rem !important;
-}
 
 /* ---------------------------------------------------------
    SIDEBAR
