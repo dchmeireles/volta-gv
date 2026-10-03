@@ -223,7 +223,7 @@ menu()
 if st.session_state["pagina"] == "inicio":
 
     st.image(
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        "https://www.hojeemdia.com.br/image/policy:1.998152.1706622392:1706622392/image.jpg?f=2x1&w=1200",
         caption="Governador Valadares - MG",
         use_container_width=True
     )
