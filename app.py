@@ -1,4 +1,8 @@
 import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
+from datetime import datetime
+
 
 # ============================================================
 # CONFIGURAÇÃO
@@ -10,9 +14,7 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="expanded"
 )
-# ============================================================
-# IDENTIDADE VISUAL
-# ============================================================
+
 
 # ============================================================
 # IDENTIDADE VISUAL
@@ -21,15 +23,37 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-        .stApp {
-            background-color: #FAF9FC;
-        }
+
+    .stApp {
+        background-color: #FAF9FC;
+    }
+
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    h1, h2, h3 {
+        color: #43266F !important;
+    }
+
+    .stButton > button {
+        background-color: #6C3FB5;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .stButton > button:hover {
+        background-color: #43266F;
+        color: white;
+    }
+
     </style>
     """,
     unsafe_allow_html=True
 )
-
-
 # ---------------------------------------------------------
 #   TÍTULOS
 #--------------------------------------------------------- 
