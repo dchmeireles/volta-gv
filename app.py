@@ -253,7 +253,7 @@ menu()
 if st.session_state["pagina"] == "inicio":
 
     st.image(
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/de/07/ec/rio-doce.jpg?w=500&h=500&s=1",
         caption="Governador Valadares - MG",
         use_container_width=True
     )
