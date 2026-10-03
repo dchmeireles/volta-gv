@@ -1,116 +1,79 @@
-import json
-import os
 import streamlit as st
-import gspread
-from google.oauth2.service_account import Credentials
+import feedparser
 
-# ==========================================
-# CONFIGURAÇÃO DE CONEXÃO COM O GOOGLE SHEETS
-# ==========================================
+# Configuração da página
+st.set_page_config(
+    page_title="Volta GV",
+    page_icon="📰",
+    layout="wide"
+)
 
-# ⚠️ COLE AQUI O ID DA SUA PLANILHA (Fica na URL do navegador entre /d/ e /edit)
-ID_DA_PLANILHA = "COLE_O_ID_DA_SUA_PLANILHA_AQUI"
+# Estilização CSS customizada
+st.markdown("""
+    <style>
+    .main-header {
+        text-align: center;
+        color: #1E3A8A;
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+    .sub-header {
+        text-align: center;
+        color: #4B5563;
+        margin-bottom: 30px;
+    }
+    .news-card {
+        background-color: #F3F4F6;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border-left: 5px solid #1E3A8A;
+    }
+    .news-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1F2937;
+        text-decoration: none;
+    }
+    .news-title:hover {
+        color: #2563EB;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
+# Cabeçalho do site
+st.markdown("<h1 class='main-header'>Volta GV</h1>", unsafe_allow_html=True)
+st.markdown("<h4 class='sub-header'>Acompanhe as principais notícias de Governador Valadares e região</h4>", unsafe_allow_html=True)
 
-def conectar_google_sheets():
-    """
-    Autentica no Google Sheets usando o st.secrets (Nuvem)
-    ou o arquivo credentials.json (Local).
-    """
-    escopos = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
+st.divider()
 
-    # 1. Tenta carregar via Streamlit Secrets (Deploy na nuvem)
-    if "gcp_json" in st.secrets:
-        conteudo_secrets = st.secrets["gcp_json"]
+# Função para buscar notícias via RSS
+@st.cache_data(ttl=600)  # Atualiza o cache a cada 10 minutos
+def carregar_noticias():
+    # URL do feed RSS de notícias sobre Governador Valadares
+    url_feed = "https://news.google.com/rss/search?q=Governador+Valadares&hl=pt-BR&gl=BR&ceid=BR:pt-419"
+    feed = feedparser.parse(url_feed)
+    return feed.entries
 
-        if isinstance(conteudo_secrets, dict):
-            creds_dict = dict(conteudo_secrets)
-        elif isinstance(conteudo_secrets, str):
-            creds_dict = json.loads(conteudo_secrets)
-        else:
-            creds_dict = dict(conteudo_secrets)
+# Seção de Notícias
+st.subheader("📌 Últimas Notícias")
 
-        # Ajusta as quebras de linha na chave privada
-        if "private_key" in creds_dict and isinstance(creds_dict["private_key"], str):
-            creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
-
-        creds = Credentials.from_service_account_info(creds_dict, scopes=escopos)
-
-    # 2. Se não estiver na nuvem, busca o arquivo credentials.json no computador
+try:
+    noticias = carregar_noticias()
+    
+    if noticias:
+        for item in noticias[:10]:  # Exibe as 10 notícias mais recentes
+            st.markdown(f"""
+                <div class="news-card">
+                    <a class="news-title" href="{item.link}" target="_blank">{item.title}</a>
+                    <p style="font-size: 12px; color: #6B7280; margin-top: 5px;">Publicado em: {item.published}</p>
+                </div>
+            """, unsafe_allow_html=True)
     else:
-        diretorio_atual = os.path.dirname(os.path.abspath(__file__))
-        caminho_credentials = os.path.join(diretorio_atual, "credentials.json")
+        st.info("Nenhuma notícia encontrada no momento. Tente novamente mais tarde.")
 
-        if not os.path.exists(caminho_credentials):
-            st.error("Arquivo de credenciais não encontrado nem no secrets nem localmente.")
-            return None
+except Exception as e:
+    st.error(f"Erro ao carregar notícias: {str(e)}")
 
-        creds = Credentials.from_service_account_file(caminho_credentials, scopes=escopos)
-
-    # Autoriza o gspread
-    return gspread.authorize(creds)
-
-
-def salvar_no_google_sheets(nome_aba, dados_linha):
-    """
-    Abre a planilha pelo ID e insere uma nova linha de dados.
-    """
-    try:
-        client = conectar_google_sheets()
-        if not client:
-            return False
-
-        # Tenta abrir a planilha usando o ID
-        try:
-            planilha = client.open_by_key(ID_DA_PLANILHA)
-        except Exception as err:
-            st.error(
-                f"Erro ao abrir a planilha pelo ID. Verifique se o ID está correto "
-                f"e se você compartilhou a planilha com o e-mail da conta de serviço como Editor. Detalhes: {err}"
-            )
-            return False
-
-        # Seleciona a aba especificada ou a primeira aba por padrão
-        try:
-            aba = planilha.worksheet(nome_aba)
-        except Exception:
-            aba = planilha.sheet1
-
-        # Insere os dados na próxima linha disponível
-        aba.append_row(dados_linha)
-        return True
-
-    except Exception as e:
-        st.error(f"Erro na conexão com o Google Sheets: {str(e)}")
-        return False
-
-
-# ==========================================
-# INTERFACE DO STREAMLIT (SEU FORMULÁRIO)
-# ==========================================
-
-st.title("Formulário Volta GV")
-
-with st.form("meu_formulario", clear_on_submit=True):
-    nome = st.text_input("Nome Completo")
-    email = st.text_input("E-mail")
-    telefone = st.text_input("Telefone")
-    mensagem = st.text_area("Mensagem")
-
-    enviado = st.form_submit_button("Enviar")
-
-    if enviado:
-        if not nome or not email:
-            st.warning("Por favor, preencha os campos obrigatórios.")
-        else:
-            # Organiza os dados para enviar para a planilha
-            linha_dados = [nome, email, telefone, mensagem]
-
-            # Chama a função para salvar na aba 'Página1' (ou o nome da sua aba)
-            sucesso = salvar_no_google_sheets("Página1", linha_dados)
-
-            if sucesso:
-                st.success("Formulário enviado e salvo com sucesso!")
+# Rodapé
+st.divider()
+st.markdown("<p style='text-align: center; color: #9CA3AF;'>© Volta GV - Todos os direitos reservados.</p>", unsafe_allow_html=True)
