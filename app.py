@@ -268,7 +268,7 @@ if st.session_state["pagina"] == "inicio":
             </p>
         </div>
         """,
-          width=500
+           unsafe_allow_html=True
     )
 
     st.subheader("O que você precisa hoje?")
