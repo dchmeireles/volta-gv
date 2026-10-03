@@ -258,18 +258,29 @@ if st.session_state["pagina"] == "inicio":
         width=300
     )
 
-st.markdown(
-    """
-    <div style="max-width: 500px; margin: 0 auto 1.5rem auto; background: linear-gradient(135deg, #43266F 0%, #6C3FB5 100%); padding: 1.2rem; border-radius: 12px; color: white; text-align: center;">
-        <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 0.2rem;">VOLTA GV</div>
-        <div style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 0.4rem; font-weight: 500;">Seu caminho de volta começa aqui.</div>
-        <p style="margin: 0; font-size: 0.8rem; opacity: 0.95; line-height: 1.3;">
-            Encontre oportunidades, cursos e caminhos para voltar ao mercado de trabalho em Governador Valadares.
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+        """
+
+        <div class="hero">
+
+            <div class="hero-title">VOLTA GV</div>
+
+            <div class="hero-subtitle">Seu caminho de volta começa aqui.</div>
+
+            <p style="margin:0; font-size:0.95rem; opacity:0.95;">
+
+                Encontre oportunidades, cursos e caminhos para voltar ao mercado de trabalho em Governador Valadares.
+
+            </p>
+
+        </div>
+
+        """,
+
+        unsafe_allow_html=True
+
+    ) 
+
+
 
     st.subheader("O que você precisa hoje?")
 
