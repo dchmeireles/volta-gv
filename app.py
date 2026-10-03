@@ -20,26 +20,115 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
 
-/* ---------------------------------------------------------
-   GERAL
---------------------------------------------------------- */
+/* Fundo geral */
+.stApp {
+    background-color: #FAF9FC;
+}
 
-html, body, [class*="css"] {
+/* Área principal */
+.block-container {
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
+}
+
+/* Títulos */
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif !important;
+    color: #43266F !important;
+}
+
+/* Título principal */
+h1 {
+    font-weight: 700 !important;
+}
+
+/* Texto */
+p, label {
     font-family: 'Inter', sans-serif;
 }
 
-.stApp {
-    background: #FAF9FC;
+/* Botões */
+.stButton > button {
+    background-color: #6C3FB5;
+    color: white;
+    border: 0;
+    border-radius: 10px;
+    font-weight: 600;
 }
 
-/* largura principal */
-
-.block-container {
-    max-width: 900px;
-    padding-top: 2.5rem;
-    padding-bottom: 4rem;
+.stButton > button:hover {
+    background-color: #43266F;
+    color: white;
 }
 
+/* Inputs */
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input {
+    border-radius: 8px;
+}
+
+/* Caixa principal da página inicial */
+.volta-hero {
+    background-color: #F1EAF9;
+    border: 1px solid #E5D8F0;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Logo textual */
+.volta-logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.7rem;
+    font-weight: 700;
+    color: #43266F;
+    letter-spacing: -1px;
+}
+
+.volta-subtitulo {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.2rem;
+    color: #5B5364;
+    line-height: 1.6;
+    margin-top: 0.5rem;
+}
+
+/* Cards */
+.volta-card {
+    background-color: white;
+    border: 1px solid #E8E1ED;
+    border-radius: 16px;
+    padding: 1.4rem;
+    margin-bottom: 1rem;
+}
+
+/* Título dos cards */
+.volta-card-titulo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #43266F;
+}
+
+/* Texto dos cards */
+.volta-card-texto {
+    color: #625A6B;
+    line-height: 1.5;
+    margin-top: 0.4rem;
+}
+
+/* Rodapé */
+.volta-footer {
+    text-align: center;
+    color: #8A8191;
+    font-size: 0.8rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+}
+
+</style>
+""", unsafe_allow_html=True)
 /* ---------------------------------------------------------
    TÍTULOS
 --------------------------------------------------------- */
