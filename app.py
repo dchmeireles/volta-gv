@@ -271,8 +271,6 @@ st.markdown(
         unsafe_allow_html=True
     )
 
-
-
     st.subheader("O que você precisa hoje?")
 
     col1, col2 = st.columns(2)
