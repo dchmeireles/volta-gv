@@ -6,6 +6,12 @@ import os
 import json
 
 # ============================================================
+# CONFIGURAÇÃO DA PLANILHA DO GOOGLE SHEETS
+# ============================================================
+# ⚠️ Cole aqui o ID da sua planilha (está no link do seu navegador entre /d/ e /edit)
+ID_DA_PLANILHA = "COLE_AQUI_O_ID_DA_SUA_PLANILHA"
+
+# ============================================================
 # CONFIGURAÇÃO DA PÁGINA
 # ============================================================
 
@@ -26,9 +32,8 @@ if "pagina" not in st.session_state:
 
 def salvar_no_google_sheets(nome_aba, dados_linha):
     """
-    Salva dados na planilha 'Respostas Volta GV'.
-    Carrega credenciais tratando gcp_json como string ou dicionário
-    no st.secrets (nuvem) ou do arquivo credentials.json local (computador).
+    Salva dados na planilha usando o ID direto do documento,
+    evitando erros de busca por nome ou Response [200].
     """
     try:
         escopos = [
@@ -40,16 +45,13 @@ def salvar_no_google_sheets(nome_aba, dados_linha):
         if "gcp_json" in st.secrets:
             conteudo_secrets = st.secrets["gcp_json"]
             
-            # Se o Streamlit já leu como dicionário
             if isinstance(conteudo_secrets, dict):
                 creds_dict = dict(conteudo_secrets)
-            # Se veio como string JSON pura, faz o parse
             elif isinstance(conteudo_secrets, str):
                 creds_dict = json.loads(conteudo_secrets)
             else:
                 creds_dict = dict(conteudo_secrets)
 
-            # Corrige quebras de linha na chave privada se necessário
             if "private_key" in creds_dict and isinstance(creds_dict["private_key"], str):
                 creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 
@@ -67,7 +69,9 @@ def salvar_no_google_sheets(nome_aba, dados_linha):
             creds = Credentials.from_service_account_file(caminho_credentials, scopes=escopos)
 
         client = gspread.authorize(creds)
-        planilha = client.open("Respostas Volta GV")
+        
+        # Abre a planilha diretamente pelo ID para evitar erro de busca por nome
+        planilha = client.open_by_key(ID_DA_PLANILHA)
         
         try:
             aba = planilha.worksheet(nome_aba)
